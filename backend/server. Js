@@ -1,0 +1,31 @@
+backend/server.js
+Copy code
+Javascript
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import Job from "./models/Job.js";
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+mongoose.connect("mongodb://127.0.0.1:27017/jobPortalDB")
+.then(()=> console.log("MongoDB Connected"))
+.catch(err=> console.log(err));
+
+// Get All Jobs
+app.get("/jobs", async (req, res) => {
+  const jobs = await Job.find();
+  res.json(jobs);
+});
+
+// Add Job
+app.post("/jobs", async (req, res) => {
+  const job = new Job(req.body);
+  await job.save();
+  res.json(job);
+});
+
+app.listen(5000, ()=> console.log("Server running on port 5000"));
